@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Exponential Growth: TikTok Viral Views</title>
+  <!-- Chart.js CDN for simple, responsive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .poster-card {
+      max-width: 1200px;
+      width: 100%;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    /* header */
+    .poster-header {
+      background: #1e2a3e;
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .poster-header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      letter-spacing: -0.3px;
+      font-weight: 700;
+    }
+
+    .poster-header p {
+      margin: 0.5rem 0 0;
+      opacity: 0.85;
+      font-size: 1.1rem;
+    }
+
+    /* two column layout: left = data+equation, right = graph */
+    .content-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      padding: 2rem 2rem 2rem 2rem;
+    }
+
+    .info-panel {
+      flex: 1.2;
+      min-width: 260px;
+    }
+
+    .graph-panel {
+      flex: 2;
+      min-width: 320px;
+    }
+
+    /* data table */
+    .data-table {
+      background: #f8fafc;
+      border-radius: 1.5rem;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 1.5rem;
+    }
+
+    .data-table h3 {
+      margin-top: 0;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 0.6rem 0.3rem;
+      border-bottom: 1px solid #cbd5e1;
+    }
+
+    th {
+      background-color: #eef2ff;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .equation-box {
+      background: #f1f5f9;
+      border-left: 6px solid #3b82f6;
+      border-radius: 1.2rem;
+      padding: 1rem 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .equation-box h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.25rem;
+    }
+
+    .equation {
+      font-family: 'Courier New', 'SF Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      margin: 0.5rem 0;
+    }
+
+    .answer {
+      background: #e6f7e6;
+      border-radius: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid #bbf7d0;
+    }
+
+    .answer strong {
+      color: #166534;
+      font-size: 1.1rem;
+    }
+
+    .big-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f3b2c;
+      word-break: break-word;
+    }
+
+    canvas {
+      max-height: 400px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 1.2rem;
+      padding: 0.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9edf2;
+    }
+
+    .note {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 0.8rem;
+      color: #475569;
+      background: #fef9e3;
+      padding: 0.4rem;
+      border-radius: 40px;
+      display: inline-block;
+      width: auto;
+    }
+
+    footer {
+      background: #f1f5f9;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #334155;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 750px) {
+      .content-grid {
+        flex-direction: column;
+        padding: 1.5rem;
+      }
+      .equation {
+        font-size: 1rem;
+      }
+      .big-number {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="poster-card">
+  <div class="poster-header">
+    <h1>📱 TikTok Viral Growth</h1>
+    <p>Exponential explosion: 100 views → triples every hour</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- LEFT SIDE: data, equation, answer -->
+    <div class="info-panel">
+      <div class="data-table">
+        <h3>📊 Hypothesized data (first hours)</h3>
+        <table>
+          <thead>
+            <tr><th>Hour (x)</th><th>Views (y = 100·3ˣ)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>100</td></tr>
+            <tr><td>1</td><td>300</td></tr>
+            <tr><td>2</td><td>900</td></tr>
+            <tr><td>3</td><td>2,700</td></tr>
+            <tr><td>4</td><td>8,100</td></tr>
+            <tr><td>5</td><td>24,300</td></tr>
+            <tr><td>6</td><td>72,900</td></tr>
+          </tbody>
+        </table>
+        <div class="note" style="margin-top: 10px;">✨ After 6 hours → 72,900 views</div>
+      </div>
+
+      <div class="equation-box">
+        <h3>📐 Exponential model</h3>
+        <p style="margin: 0 0 5px 0;">General form: <strong>y = a · bˣ</strong></p>
+        <div class="equation">y = 100 · 3ˣ</div>
+        <p style="margin: 8px 0 0 0; font-size: 0.9rem;">✔ a = initial views (100)<br>✔ b = growth factor (triples every hour)</p>
+      </div>
+
+      <div class="answer">
+        <strong>❓ Question:</strong> <em>"If a TikTok starts with 100 views and triples every hour, how many views in 24 hours?"</em><br><br>
+        <strong>✅ Calculation:</strong><br>
+        y = 100 · 3²⁴<br>
+        3²⁴ = (3¹⁰)² · 3⁴ = (59,049)² · 81 ≈ 2.82 × 10¹¹<br>
+        Multiply by 100 → ≈ <strong class="big-number">2.82 × 10¹³</strong><br>
+        <span style="background: #d9f99d; padding: 0.1rem 0.5rem; border-radius: 30px; display: inline-block; margin-top: 8px;">🎯 ~28.2 trillion views after 24h!</span>
+        <p style="margin-top: 12px; margin-bottom: 0; font-size: 0.8rem;">⚠️ Real‑world limits: platform saturation, audience fatigue. But mathematically, viral potential is immense.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: GRAPH (Chart.js) -->
+    <div class="graph-panel">
+      <h3 style="margin-top: 0; margin-bottom: 0.5rem;">📈 Exponential growth curve</h3>
+      <canvas id="growthChart" width="600" height="350" style="width:100%; height:auto; max-height:380px;"></canvas>
+      <div class="note" style="display: block; text-align: center; margin-top: 12px;">
+        🔵 Blue points: actual data (hours 0 → 6) &nbsp;|&nbsp; Smooth line shows exponential trend
+      </div>
+      <div style="margin-top: 1rem; background: #eef2ff; border-radius: 1rem; padding: 0.6rem 1rem;">
+        <p style="margin: 0; font-size: 0.85rem;"><strong>💡 Why exponential?</strong> Each hour multiplies views by 3 → explosive growth. The graph bends steeply upward after just a few hours.</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    🧪 Poster project: collect data, draw graph, exponential equation, answer real‑world question | Theme: Social media viral growth
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // Data points: hours 0 to 6 (shows clear exponential rise)
+    const hours = [0, 1, 2, 3, 4, 5, 6];
+    const views = hours.map(h => 100 * Math.pow(3, h));
+
+    // For smoother curve we also generate extra interpolated points? 
+    // Actually line chart with 'monotone' interpolation looks good with enough points.
+    // We'll just plot original points + line tension 0.4 to show curve.
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: hours.map(h => `${h}h`),
+        datasets: [
+          {
+            label: 'Views (exponential: y = 100 · 3ˣ)',
+            data: views,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+            borderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 9,
+            pointBackgroundColor: '#1e3a8a',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            tension: 0.3,        // slight smooth curve between points
+            fill: true,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let val = context.raw;
+                return `Views: ${val.toLocaleString()}`;
+              }
+            },
+            backgroundColor: '#0f172a',
+            titleColor: '#f1f5f9',
+          },
+          legend: {
+            position: 'top',
+            labels: {
+              font: { size: 12, weight: 'bold' },
+              boxWidth: 12,
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: '📱 Total Views',
+              font: { weight: 'bold', size: 13 },
+            },
+            grid: { color: '#e2e8f0' },
+            ticks: {
+              callback: function(value) {
+                if (value >= 1e6) return (value / 1e6).toFixed(0) + 'M';
+                if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
+                return value;
+              }
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: '⏱️ Time (hours since upload)',
+              font: { weight: 'bold', size: 13 },
+            },
+            grid: { display: false },
+          }
+        },
+        // Optional: add annotation style? Not needed; simplicity is fine.
+        elements: {
+          line: {
+            borderJoin: 'round',
+            borderCap: 'round',
+          }
+        }
+      }
+    });
+  })();
+</script>
+
+<!-- additional note: The graph shows hours 0 to 6, because beyond that values become astronomical. 
+     The equation y=100*3^x clearly explains the 24h result in the answer panel. -->
+</body>
+</html>
